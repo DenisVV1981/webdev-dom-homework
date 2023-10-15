@@ -86,11 +86,16 @@
 
   let comments = [];
 
+  /*делаем API запрос*/
   const getComments = () => {
     fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
       method: 'GET',
-    }).then((response) => {
-      response.json().then((responseData) => {
+    }) // возвращает: promise, у которого есть функция .then()
+      .then((response) => {
+        return response.json() // json() возвращает объект promise, у которого есть функция then;
+      }) // возвращает тот promise, который он получил из json()
+      // вызываем promise, который был получен из json()
+      .then((responseData) => {
         comments = responseData.comments.map((el) => {
           return {
             name: el.author.name,
@@ -103,7 +108,6 @@
         });
         render();
       });
-    });
   };
   getComments();
 
