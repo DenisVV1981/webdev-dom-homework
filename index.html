@@ -8,7 +8,11 @@
 </head>
 
 <body>
+
   <div class="container">
+    <div id="start">
+      Пожалуйста подождите, загружаю комментарии...
+    </div>
     <ul id="list" class="comments">
       <!-- <li class="comment">
         <div class="comment-header">
@@ -50,7 +54,9 @@
         <button id="delete-comment" class="add-form-button">Удалить последнее сообщение</button>
       </div>
     </div>
-
+    <div id="comment-form-adding" style="display: none;">
+      Комментарий добавляется...
+    </div>
     <div id="comment-form" class="add-form">
       <input type="text" id="name-input" class="add-form-name" placeholder="Введите ваше имя" value="" />
       <textarea type="textarea" id="comment-input" class="add-form-text" placeholder="Введите ваш коментарий"
@@ -83,16 +89,17 @@
   const listElements = document.getElementById('list');
   const commentForm = document.getElementById('comment-form');
   const deleteElement = document.getElementById('delete-comment');
-
+  const commentFormAdding = document.getElementById('comment-form-adding');
+  const commentsLoading = document.getElementById('start');
   let comments = [];
 
   /*делаем API запрос*/
   const getComments = () => {
-    fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
+    return fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
       method: 'GET',
     }) // возвращает: promise, у которого есть функция .then()
-      .then((response) => {
-        return response.json() // json() возвращает объект promise, у которого есть функция then;
+      .then((response, wrongResponse) => {
+        return response.json() // json() возвращает объект promise, у которого есть функция then();
       }) // возвращает тот promise, который он получил из json()
       // вызываем promise, который был получен из json()
       .then((responseData) => {
@@ -109,21 +116,51 @@
         render();
       });
   };
-  getComments();
+  getComments()
+    .then(() => {
+      commentsLoading.style.display = 'none';
+    });
 
-  const initDeleteLike = () => {
-    const deleteLikes = document.querySelectorAll(".like-button");
-    for (const deleteLike of deleteLikes) {
-      deleteLike.addEventListener('click', (event) => {
+  // Функция для имитации обащения к API, и задержки получения ответа. 
+  // Т.е. ответ приходит не мгновенно, т.е. пока ждем ответ надо показать анимацию.
+  // Не смотрите особо на внутренности, мы разберемся с этим позже
+  function delay(interval = 300) {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, interval);
+    });
+  };
+
+  // Пример использования:
+
+  const initChangeLike = () => {
+    const changeLikes = document.querySelectorAll(".like-button");
+    for (const changeLike of changeLikes) {
+      changeLike.addEventListener('click', (event) => {
         event.stopPropagation();
-        const index = deleteLike.dataset.index;
-        if (comments[index].isLike) {
-          comments[index].likeCount--;
-        } else {
-          comments[index].likeCount++;
-        }
-        comments[index].isLike = !comments[index].isLike;
+        const index = changeLike.dataset.index;
+        let comment = comments[index];
+
+        comment.isLikeLoading = true;
         render();
+        
+        delay(2000).then(() => {
+          comment.likeCount = comment.isLike
+            ? comment.likeCount - 1
+            : comment.likeCount + 1;
+          comment.isLike = !comment.isLike;
+          comment.isLikeLoading = false;
+          render();
+        });
+
+        // if (comment.isLike) {
+        //   comment.likeCount--;
+        // } else {
+        //   comment.likeCount++;
+        // }
+        // comment.isLike = !comment.isLike;
+        // render();
       });
     };
   };
@@ -184,13 +221,13 @@
         }
           <div class="likes">
             <span class="likes-counter">${comment.likeCount}</span>
-            <button class="like-button ${comment.isLike ? '-active-like' : ''}" data-index="${index}"></button>
+            <button class="like-button ${comment.isLike ? '-active-like' : ''} ${comment.isLikeLoading ? '-loading-like' : ''}" data-index="${index}"></button>
           </div>
         </div>
       </li>`;
     }).join('');
 
-    initDeleteLike();
+    initChangeLike();
     initEditElements();
     initSaveButtons();
     initCommentClickListener();
@@ -230,6 +267,9 @@
     // };
 
     // comments.push(newComment);
+    // commentForm.disabled = true;
+    commentForm.style.display = 'none';
+    commentFormAdding.style.display = 'flex';
 
 
     fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
@@ -238,12 +278,19 @@
         text: commentElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
         name: nameElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;")
       })
-    }).then((response) => {
-      response.json().then((responseData) => {
-        console.log(responseData);
-        getComments();
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseData) => {
+        return getComments();
+      })
+      .then(() => {
+
+        commentForm.style.display = 'flex';
+        commentFormAdding.style.display = 'none';
+
       });
-    });
 
     nameElement.value = "";
     commentElement.value = "";
