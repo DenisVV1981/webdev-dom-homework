@@ -144,7 +144,7 @@
 
         comment.isLikeLoading = true;
         render();
-        
+
         delay(2000).then(() => {
           comment.likeCount = comment.isLike
             ? comment.likeCount - 1
@@ -237,63 +237,55 @@
 
 
 
-  const formCallback = (e) => {
-    if (e.key !== "Enter" && e.srcElement.id !== "addMessage") {
-      return;
-    }
-
+  const postMessage = () => {
     buttonElement.classList.remove('error-submit');
-
-    nameElement.classList.remove('error-input');
-    if (nameElement.value === "") {
-      nameElement.classList.add('error-input');
-      buttonElement.classList.add('error-submit');
-      return;
-    }
-
-    commentElement.classList.remove('error-input');
-    if (commentElement.value === "") {
-      commentElement.classList.add('error-input');
-      buttonElement.classList.add('error-submit');
-      return;
-    }
-
-    // let newComment = {
-    //   name: nameElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-    //   date: new Date(),
-    //   comment: commentElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-    //   likeCount: 0,
-    //   isLike: false
-    // };
-
-    // comments.push(newComment);
-    // commentForm.disabled = true;
     commentForm.style.display = 'none';
     commentFormAdding.style.display = 'flex';
-
 
     fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
       method: 'POST',
       body: JSON.stringify({
         text: commentElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-        name: nameElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+        name: nameElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
+        forceError: true
       })
     })
       .then((response) => {
-        return response.json();
+        console.log(response);
+        if (response.status === 201) {
+          return response.json();
+        } else if (response.status === 400) {
+          response.json().then((responseData) => {
+            alert(responseData.error);
+          });
+          throw new Error("400 Ошибка");
+        } else if (response.status === 500) {
+          //throw new Error('500 Ошибка сервера');
+          postMessage();
+        }
       })
       .then((responseData) => {
         return getComments();
       })
       .then(() => {
-
+        nameElement.value = "";
+        commentElement.value = "";
         commentForm.style.display = 'flex';
         commentFormAdding.style.display = 'none';
-
+      })
+      .catch((error) => {
+        console.log(error);
+        commentForm.style.display = 'flex';
+        commentFormAdding.style.display = 'none';
       });
+  };
 
-    nameElement.value = "";
-    commentElement.value = "";
+  const formCallback = (e) => {
+    if (e.key !== "Enter" && e.srcElement.id !== "addMessage") {
+      return;
+    }
+
+    postMessage();
 
   };
 
