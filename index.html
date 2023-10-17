@@ -270,11 +270,11 @@
       .then(() => {
         nameElement.value = "";
         commentElement.value = "";
-        commentForm.style.display = 'flex';
-        commentFormAdding.style.display = 'none';
       })
       .catch((error) => {
         console.log(error);
+      })
+      .finally(()=> {
         commentForm.style.display = 'flex';
         commentFormAdding.style.display = 'none';
       });
