@@ -14,40 +14,6 @@
       Пожалуйста подождите, загружаю комментарии...
     </div>
     <ul id="list" class="comments">
-      <!-- <li class="comment">
-        <div class="comment-header">
-          <div>Глеб Фокин</div>
-          <div>12.02.22 12:18</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            Это будет первый комментарий на этой странице
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">3</span>
-            <button class="like-button"></button>
-          </div>
-        </div>
-      </li>
-      <li class="comment">
-        <div class="comment-header">
-          <div>Варвара Н.</div>
-          <div>13.02.22 19:22</div>
-        </div>
-        <div class="comment-body">
-          <div class="comment-text">
-            Мне нравится как оформлена эта страница! ❤
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span class="likes-counter">75</span>
-            <button class="like-button -active-like"></button>
-          </div>
-        </div>
-      </li> -->
     </ul>
     <div>
       <div>
@@ -153,14 +119,6 @@
           comment.isLikeLoading = false;
           render();
         });
-
-        // if (comment.isLike) {
-        //   comment.likeCount--;
-        // } else {
-        //   comment.likeCount++;
-        // }
-        // comment.isLike = !comment.isLike;
-        // render();
       });
     };
   };
@@ -260,8 +218,8 @@
           });
           throw new Error("400 Ошибка");
         } else if (response.status === 500) {
-          //throw new Error('500 Ошибка сервера');
           postMessage();
+          throw new Error('500 Ошибка');
         }
       })
       .then((responseData) => {
@@ -273,8 +231,15 @@
       })
       .catch((error) => {
         console.log(error);
+        if (error.message === '400 Ошибка') {
+          alert("Поля ввода должны содержать не менее 3 символов");
+        } else if (error.message === '500 Ошибка') {
+          // alert ("Сервер сломался, попробуй позже.");
+        } else {
+          alert("Кажется, у вас пропал интернет. Проверьте соединение.");
+        }
       })
-      .finally(()=> {
+      .finally(() => {
         commentForm.style.display = 'flex';
         commentFormAdding.style.display = 'none';
       });
