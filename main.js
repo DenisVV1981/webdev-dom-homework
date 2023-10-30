@@ -42,3 +42,7 @@ commentForm.addEventListener("keyup", formCallback);
 deleteElement.addEventListener("click", () => {
     listElements.removeChild(listElements.lastChild);
 })
+
+
+
+жаовцждопицжйдопатйжцдомпитжфдлодцмиждлфыодлвмижлфыомифоыоми
