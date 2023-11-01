@@ -1,10 +1,10 @@
 
-export { render };
+export { renderList };
 import {initChangeLike, initEditElements, initSaveButtons, initCommentClickListener } from "./listenersInit.js";
 
 const listElements = document.getElementById('list');
 
-const render = ({ comments }) => {
+const renderList = ({ comments }) => {
     listElements.innerHTML = comments.map((comment, index) => {
         let d = comment.date;
         let currentTime = `${d.getDate().toString().padStart(2, 0)}.${(d.getMonth() + 1).toString().padStart(2, 0)}.${d.getFullYear().toString().substr(-2)} ${d.getHours()}:${d.getMinutes()}`;
@@ -32,9 +32,9 @@ const render = ({ comments }) => {
       </li>`;
     }).join('');
 
-    initChangeLike({ comments, render });
-    initEditElements({ comments, render });
-    initSaveButtons({ comments, render });
-    initCommentClickListener({ comments, render });
+    initChangeLike({ comments, renderList });
+    initEditElements({ comments, renderList });
+    initSaveButtons({ comments, renderList });
+    initCommentClickListener({ comments, renderList });
 
 };

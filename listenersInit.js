@@ -1,4 +1,4 @@
-export {initChangeLike, initEditElements, initSaveButtons, initCommentClickListener }
+export { initChangeLike, initEditElements, initSaveButtons, initCommentClickListener }
 
 const listElements = document.getElementById('list');
 const commentElement = document.getElementById('comment-input');
@@ -16,7 +16,7 @@ function delay(interval = 300) {
 
 // Пример использования:
 
-const initChangeLike = ({ comments, render }) => {
+const initChangeLike = ({ comments, renderList }) => {
     const changeLikes = document.querySelectorAll(".like-button");
     for (const changeLike of changeLikes) {
         changeLike.addEventListener('click', (event) => {
@@ -25,7 +25,7 @@ const initChangeLike = ({ comments, render }) => {
             let comment = comments[index];
 
             comment.isLikeLoading = true;
-            render({ comments });
+            renderList({ comments });
 
             delay(2000).then(() => {
                 comment.likeCount = comment.isLike
@@ -33,41 +33,41 @@ const initChangeLike = ({ comments, render }) => {
                     : comment.likeCount + 1;
                 comment.isLike = !comment.isLike;
                 comment.isLikeLoading = false;
-                render({ comments });
+                renderList({ comments });
             });
         });
     };
 };
-const initEditElements = ({ comments, render }) => {
+const initEditElements = ({ comments, renderList }) => {
     const editButtonElements = document.querySelectorAll('.edit-form-button');
     for (const editButton of editButtonElements) {
         editButton.addEventListener('click', () => {
             const index = editButton.dataset.index;
             comments[index].isEdit = true;
-            render({ comments });
+            renderList({ comments });
         });
     }
 };
-const initSaveButtons = ({ comments, render }) => {
+const initSaveButtons = ({ comments, renderList }) => {
     const saveButtons = document.querySelectorAll(".save-form-button");
     for (const saveButton of saveButtons) {
         saveButton.addEventListener('click', () => {
             const index = saveButton.dataset.index;
             comments[index].isEdit = false;
             comments[index].comment = listElements.querySelectorAll('.comment')[index].querySelector('textarea').value;
-            render({ comments });
+            renderList({ comments });
         });
     }
 };
 
-const initCommentClickListener = ({ comments, render }) => {
+const initCommentClickListener = ({ comments, renderList }) => {
     const clickElemets = document.querySelectorAll('.comment-text');
     for (const clicks of clickElemets) {
         clicks.addEventListener('click', () => {
             const index = clicks.dataset.index;
             commentElement.value = `QUOTE_BEGIN` + comments[index].name + '\n' + `>` + comments[index].comment + 'QUOTE_END\n';
             commentElement.focus();
-        render({ comments });
+            renderList({ comments });
         });
     }
 };

@@ -1,6 +1,6 @@
 
 
-export function getCommentsApi({ comments, render }) {
+export function getCommentsApi({ comments, renderList }) {
     return fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
         method: 'GET',
     })
@@ -18,14 +18,14 @@ export function getCommentsApi({ comments, render }) {
                     isEdit: false
                 };
             });
-            render({ comments });
+            renderList({ comments });
         });
 
 }
 
 
 export function addCommentApi({ commentElement, nameElement, commentForm, commentFormAdding, getComments }) {
-  fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
+    fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
         method: 'POST',
         body: JSON.stringify({
             text: commentElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
@@ -65,4 +65,20 @@ export function addCommentApi({ commentElement, nameElement, commentForm, commen
             commentForm.style.display = 'flex';
             commentFormAdding.style.display = 'none';
         });
+}
+
+
+export function loginUserApi({ login, password }){
+fetch("https://wedev-api.sky.pro/api/user/login", {
+    method: 'POST',
+    body: JSON.stringify({
+        login,
+        password
+    })
+}).then((response) => {
+    if (response.status === 400) {
+        throw new Error("Неправильный логин или пароль");
+    }
+    return response.json();
+});
 }
