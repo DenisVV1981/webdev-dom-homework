@@ -2,9 +2,10 @@
 export { renderList };
 import {initChangeLike, initEditElements, initSaveButtons, initCommentClickListener } from "./listenersInit.js";
 
-const listElements = document.getElementById('list');
+
 
 const renderList = ({ comments }) => {
+  const listElements = document.getElementById('list');
     listElements.innerHTML = comments.map((comment, index) => {
         let d = comment.date;
         let currentTime = `${d.getDate().toString().padStart(2, 0)}.${(d.getMonth() + 1).toString().padStart(2, 0)}.${d.getFullYear().toString().substr(-2)} ${d.getHours()}:${d.getMinutes()}`;

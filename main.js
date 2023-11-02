@@ -4,27 +4,22 @@ import { renderList } from "./renderList.js";
 import { renderSignin } from "./renderLogin.js";
 
 let token = null;
+let comments = [];
+
+const fetchCommentsAndRender = () => {
+    const getComments = () => {
+        return getCommentsApi({ comments, renderList })
+    };
+    getComments()
+        .then(() => {
+            // commentsLoading.style.display = 'none';
+            renderApp();
+        });
+};
 
 const renderApp = () => {
-    const buttonElement = document.getElementById('addMessage');
-    const nameElement = document.getElementById('name-input');
-    const commentElement = document.getElementById('comment-input');
-    const listElements = document.getElementById('list');
-    const commentForm = document.getElementById('comment-form');
-    const deleteElement = document.getElementById('delete-comment');
-    const commentFormAdding = document.getElementById('comment-form-adding');
-    const commentsLoading = document.getElementById('start');
-    let comments = [];
-    const appElement = document.getElementById("app");
-
-    if (!token) {
-        renderSignin({ appElement });
-        return;
-
-    }
-
+    const commentsElement = document.getElementById("comments-container");
     const appTemplate = `
-<div class="container">
     <div id="start">
       Пожалуйста подождите, загружаю комментарии...
     </div>
@@ -46,16 +41,37 @@ const renderApp = () => {
         <button id="addMessage" class="add-form-button">Написать</button>
       </div>
     </div>
-  </div>
+  
 `;
+    
+    commentsElement.innerHTML = appTemplate;
 
-    const getComments = () => {
-        return getCommentsApi({ comments, renderList })
-    };
-    getComments()
-        .then(() => {
-            commentsLoading.style.display = 'none';
+
+    const buttonElement = document.getElementById('addMessage');
+    const nameElement = document.getElementById('name-input');
+    const commentElement = document.getElementById('comment-input');
+    const listElements = document.getElementById('list');
+    const commentForm = document.getElementById('comment-form');
+    const deleteElement = document.getElementById('delete-comment');
+    const commentFormAdding = document.getElementById('comment-form-adding');
+    const commentsLoading = document.getElementById('start');
+
+    
+ 
+    const loginElement = document.getElementById("login-container");
+
+    if (!token) {
+        renderSignin({
+            loginElement,
+            fetchCommentsAndRender,
+            setToken: function (newToken) {
+                token = newToken;
+            }
         });
+    }
+
+    
+    
 
     renderList({ comments });
 
@@ -80,4 +96,4 @@ const renderApp = () => {
         listElements.removeChild(listElements.lastChild);
     });
 };
-renderApp();
+fetchCommentsAndRender();

@@ -18,7 +18,7 @@ export function getCommentsApi({ comments, renderList }) {
                     isEdit: false
                 };
             });
-            renderList({ comments });
+            // renderList({ comments });
         });
 
 }
@@ -68,17 +68,17 @@ export function addCommentApi({ commentElement, nameElement, commentForm, commen
 }
 
 
-export function loginUserApi({ login, password }){
-fetch("https://wedev-api.sky.pro/api/user/login", {
-    method: 'POST',
-    body: JSON.stringify({
-        login,
-        password
-    })
-}).then((response) => {
-    if (response.status === 400) {
-        throw new Error("Неправильный логин или пароль");
-    }
-    return response.json();
-});
+export function loginUserApi({ login, password }) {
+    return fetch("https://wedev-api.sky.pro/api/user/login", {
+        method: 'POST',
+        body: JSON.stringify({
+            login,
+            password
+        })
+    }).then((response) => {
+        if (response.status === 400) {
+            throw new Error("Неправильный логин или пароль");
+        }
+        return response.json();
+    });
 }
