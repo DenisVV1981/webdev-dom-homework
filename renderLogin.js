@@ -1,7 +1,7 @@
 
 import { loginUserApi } from "./api.js";
 
-export function renderSignin({ loginElement, setToken, fetchCommentsAndRender}) {
+export function renderSigninForm({ loginContainerElement, setToken, fetchCommentsAndRender }) {
 
   let isLoginMode = true;
 
@@ -16,15 +16,14 @@ export function renderSignin({ loginElement, setToken, fetchCommentsAndRender}) 
           <input type="password" id="signin-password-input" class="add-form-name" placeholder="Введите пароль" value="" />
           
           <div class="add-form-row">
-            <button id="signin-button" class="add-form-button">${isLoginMode ?  `Войти` : `Зарегистрироваться`}</button>
+            <button id="signin-button" class="add-form-button">${isLoginMode ? `Войти` : `Зарегистрироваться`}</button>
           </div>
           <div class="add-form-row">
           <button id="toggle-button" class="add-form-button">Перейти ${isLoginMode ? `к регистрации` : `ко входу`}</button>
         </div>
-        </div>
+        </div>`;
+    loginContainerElement.innerHTML = signinTemplate;
 
-`;
-    loginElement.innerHTML = signinTemplate;
     document.getElementById('toggle-button').addEventListener("click", () => {
       isLoginMode = !isLoginMode;
       renderForm();
@@ -50,7 +49,10 @@ export function renderSignin({ loginElement, setToken, fetchCommentsAndRender}) 
       })
         .then((user) => {
           console.log(user);
+
           setToken(`Bearer ${user.user.token}`);
+          loginContainerElement.innerHTML = null;
+          
           fetchCommentsAndRender();
 
         }).catch((error) => {

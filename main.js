@@ -1,99 +1,58 @@
 "use strict";
-import { getCommentsApi, addCommentApi } from "./api.js";
+import { getCommentsApi } from "./api.js";
 import { renderList } from "./renderList.js";
-import { renderSignin } from "./renderLogin.js";
+import { renderSigninForm } from "./renderLogin.js";
+import { renderNewCommentForm } from "./renderNewComment.js";
+
+
+const commentsLoading = document.getElementById('start');
 
 let token = null;
 let comments = [];
 
 const fetchCommentsAndRender = () => {
-    const getComments = () => {
-        return getCommentsApi({ comments, renderList })
-    };
-    getComments()
-        .then(() => {
-            // commentsLoading.style.display = 'none';
-            renderApp();
-        });
+  getCommentsApi()
+    .then((commentsResponse) => {
+      comments = commentsResponse;
+      commentsLoading.style.display = 'none';
+      renderApp();
+    });
 };
 
 const renderApp = () => {
-    const commentsElement = document.getElementById("comments-container");
-    const appTemplate = `
-    <div id="start">
-      Пожалуйста подождите, загружаю комментарии...
-    </div>
-    <ul id="list" class="comments">
-    </ul>
-    <div>
-      <div>
-        <button id="delete-comment" class="add-form-button">Удалить последнее сообщение</button>
-      </div>
-    </div>
-    <div id="comment-form-adding" style="display: none;">
-      Комментарий добавляется...
-    </div>
-    <div id="comment-form" class="add-form">
-      <input type="text" id="name-input" class="add-form-name" placeholder="Введите ваше имя" value="" />
-      <textarea type="textarea" id="comment-input" class="add-form-text" placeholder="Введите ваш коментарий"
-        rows="4"></textarea>
-      <div class="add-form-row">
-        <button id="addMessage" class="add-form-button">Написать</button>
-      </div>
-    </div>
-  
-`;
-    
-    commentsElement.innerHTML = appTemplate;
+  // render формы авторизации
+  const loginContainerElement = document.getElementById("login-container");
+  if (!token) {
+    renderSigninForm({
+      loginContainerElement,
+      fetchCommentsAndRender,
 
-
-    const buttonElement = document.getElementById('addMessage');
-    const nameElement = document.getElementById('name-input');
-    const commentElement = document.getElementById('comment-input');
-    const listElements = document.getElementById('list');
-    const commentForm = document.getElementById('comment-form');
-    const deleteElement = document.getElementById('delete-comment');
-    const commentFormAdding = document.getElementById('comment-form-adding');
-    const commentsLoading = document.getElementById('start');
-
-    
- 
-    const loginElement = document.getElementById("login-container");
-
-    if (!token) {
-        renderSignin({
-            loginElement,
-            fetchCommentsAndRender,
-            setToken: function (newToken) {
-                token = newToken;
-            }
-        });
-    }
-
-    
-    
-
-    renderList({ comments });
-
-    const postMessage = () => {
-        buttonElement.classList.remove('error-submit');
-        commentForm.style.display = 'none';
-        commentFormAdding.style.display = 'flex';
-        addCommentApi({ commentElement, nameElement, commentForm, commentFormAdding, getComments });
-    };
-
-    const formCallback = (e) => {
-        if (e.key !== "Enter" && e.srcElement.id !== "addMessage") {
-            return;
-        }
-        postMessage();
-    };
-
-    buttonElement.addEventListener("click", formCallback);
-    commentForm.addEventListener("keyup", formCallback);
-
-    deleteElement.addEventListener("click", () => {
-        listElements.removeChild(listElements.lastChild);
+      setToken: function (newToken) {
+        token = newToken;
+      }
     });
+  }
+  // render списка комментариев
+  const commentsElement = document.getElementById("comments-container");
+  const appTemplate = `
+    <ul id="list" class="comments"></ul>
+    <div>
+      ${!token ? '' : `<button id="delete-comment" class="add-form-button">Удалить последнее сообщение</button>`}
+    </div>`;
+  commentsElement.innerHTML = appTemplate;
+
+  renderList({ comments });
+  if (token) {
+    const listElements = document.getElementById('list');
+    const deleteElement = document.getElementById('delete-comment');
+    deleteElement.addEventListener("click", () => {
+      listElements.removeChild(listElements.lastChild);
+    });
+  }
+  // render формы новых комментариев
+  if (token) {
+    const newCommentContainerElement = document.getElementById("comment-form-container");
+    renderNewCommentForm({ newCommentContainerElement, fetchCommentsAndRender });
+  }
 };
 fetchCommentsAndRender();

@@ -1,6 +1,6 @@
 
 
-export function getCommentsApi({ comments, renderList }) {
+export function getCommentsApi() {
     return fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
         method: 'GET',
     })
@@ -8,7 +8,7 @@ export function getCommentsApi({ comments, renderList }) {
             return response.json()
         })
         .then((responseData) => {
-            comments = responseData.comments.map((el) => {
+            return responseData.comments.map((el) => {
                 return {
                     name: el.author.name,
                     date: new Date(el.date),
@@ -18,13 +18,11 @@ export function getCommentsApi({ comments, renderList }) {
                     isEdit: false
                 };
             });
-            // renderList({ comments });
         });
-
 }
 
 
-export function addCommentApi({ commentElement, nameElement, commentForm, commentFormAdding, getComments }) {
+export function addCommentApi({ commentElement, nameElement, commentForm, commentFormAdding, fetchCommentsAndRender }) {
     fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
         method: 'POST',
         body: JSON.stringify({
@@ -48,7 +46,7 @@ export function addCommentApi({ commentElement, nameElement, commentForm, commen
             }
         })
         .then((responseData) => {
-            return getComments();
+            return fetchCommentsAndRender();
         })
         .then(() => {
             nameElement.value = "";
