@@ -8,7 +8,7 @@ import { renderNewCommentForm } from "./renderNewComment.js";
 const commentsLoading = document.getElementById('start');
 
 let myLocalStorage = window.localStorage;
-let token = null;
+let token = myLocalStorage.getItem('token');
 let comments = [];
 
 

@@ -1,7 +1,7 @@
 
 
 export function getCommentsApi() {
-    return fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
+    return fetch(" https://wedev-api.sky.pro/api/v2/denis-vasilev/comments", {
         method: 'GET',
     })
         .then((response, wrongResponse) => {
@@ -15,7 +15,8 @@ export function getCommentsApi() {
                     comment: el.text,
                     likeCount: el.likes,
                     isLike: false,
-                    isEdit: false
+                    isEdit: false,
+                    id: el.id,
                 };
             });
         });
@@ -23,7 +24,7 @@ export function getCommentsApi() {
 
 
 export function addCommentApi({ commentElement, nameElement, commentForm, commentFormAdding, fetchCommentsAndRender }) {
-    fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
+    fetch(" https://wedev-api.sky.pro/api/v2/denis-vasilev/comments", {
         method: 'POST',
         body: JSON.stringify({
             text: commentElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
@@ -93,6 +94,17 @@ export function newUserRegistrationApi({ login, password, name }) {
         if (response.status === 400) {
             throw new Error("Такой пользователь уже существует");
         }
+        return response.json();
+    });
+}
+
+export function changeLikeApi({ comment }) {
+    return fetch(`https://wedev-api.sky.pro/api/v2/denis-vasilev/comments/${comment.id}/toggle-like`, {
+        method: 'POST',
+        headers: {
+            Authorization: window.localStorage.getItem('token'),
+        }
+    }).then((response) => {
         return response.json();
     });
 }

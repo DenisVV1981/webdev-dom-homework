@@ -1,3 +1,4 @@
+import { changeLikeApi } from "./api.js";
 
 export { initChangeLike, initEditElements, initSaveButtons, initAnswerCommentListener }
 
@@ -22,20 +23,25 @@ const initChangeLike = ({ comments, fetchCommentsAndRender }) => {
     for (const changeLike of changeLikes) {
         changeLike.addEventListener('click', (event) => {
             event.stopPropagation();
+
             const index = changeLike.dataset.index;
             let comment = comments[index];
 
-            comment.isLikeLoading = true;
+            changeLikeApi({ comment });
+
             fetchCommentsAndRender();
 
-            delay(2000).then(() => {
-                comment.likeCount = comment.isLike
-                    ? comment.likeCount - 1
-                    : comment.likeCount + 1;
-                comment.isLike = !comment.isLike;
-                comment.isLikeLoading = false;
-                fetchCommentsAndRender();
-            });
+
+
+            // comment.isLikeLoading = true;
+            // delay(2000).then(() => {
+            //     comment.likeCount = comment.isLike
+            //         ? comment.likeCount - 1
+            //         : comment.likeCount + 1;
+            //     comment.isLike = !comment.isLike;
+            //     comment.isLikeLoading = false;
+            //     fetchCommentsAndRender();
+            // });
         });
     };
 };
