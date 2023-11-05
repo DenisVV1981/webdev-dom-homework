@@ -1,7 +1,8 @@
-export { initChangeLike, initEditElements, initSaveButtons, initCommentClickListener }
+
+export { initChangeLike, initEditElements, initSaveButtons, initAnswerCommentListener }
 
 const listElements = document.getElementById('list');
-const commentElement = document.getElementById('comment-input');
+
 
 // Функция для имитации обащения к API, и задержки получения ответа. 
 // Т.е. ответ приходит не мгновенно, т.е. пока ждем ответ надо показать анимацию.
@@ -16,7 +17,7 @@ function delay(interval = 300) {
 
 // Пример использования:
 
-const initChangeLike = ({ comments, renderList }) => {
+const initChangeLike = ({ comments, fetchCommentsAndRender }) => {
     const changeLikes = document.querySelectorAll(".like-button");
     for (const changeLike of changeLikes) {
         changeLike.addEventListener('click', (event) => {
@@ -25,7 +26,7 @@ const initChangeLike = ({ comments, renderList }) => {
             let comment = comments[index];
 
             comment.isLikeLoading = true;
-            renderList({ comments });
+            fetchCommentsAndRender();
 
             delay(2000).then(() => {
                 comment.likeCount = comment.isLike
@@ -33,41 +34,43 @@ const initChangeLike = ({ comments, renderList }) => {
                     : comment.likeCount + 1;
                 comment.isLike = !comment.isLike;
                 comment.isLikeLoading = false;
-                renderList({ comments });
+                fetchCommentsAndRender();
             });
         });
     };
 };
-const initEditElements = ({ comments, renderList }) => {
+const initEditElements = ({ comments, render }) => {
     const editButtonElements = document.querySelectorAll('.edit-form-button');
     for (const editButton of editButtonElements) {
         editButton.addEventListener('click', () => {
             const index = editButton.dataset.index;
             comments[index].isEdit = true;
-            renderList({ comments });
+            render();
         });
     }
 };
-const initSaveButtons = ({ comments, renderList }) => {
+const initSaveButtons = ({ comments, render, fetchCommentsAndRender }) => {
+    const listElements = document.getElementById('list');
     const saveButtons = document.querySelectorAll(".save-form-button");
     for (const saveButton of saveButtons) {
         saveButton.addEventListener('click', () => {
             const index = saveButton.dataset.index;
             comments[index].isEdit = false;
             comments[index].comment = listElements.querySelectorAll('.comment')[index].querySelector('textarea').value;
-            renderList({ comments });
+            render();
+            // fetchCommentsAndRender();
         });
     }
 };
 
-const initCommentClickListener = ({ comments, renderList }) => {
+const initAnswerCommentListener = ({ comments }) => {
     const clickElemets = document.querySelectorAll('.comment-text');
     for (const clicks of clickElemets) {
         clicks.addEventListener('click', () => {
+            const commentElement = document.getElementById('comment-input');
             const index = clicks.dataset.index;
             commentElement.value = `QUOTE_BEGIN` + comments[index].name + '\n' + `>` + comments[index].comment + 'QUOTE_END\n';
             commentElement.focus();
-            renderList({ comments });
         });
     }
 };

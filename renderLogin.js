@@ -1,5 +1,5 @@
 
-import { loginUserApi } from "./api.js";
+import { loginUserApi, newUserRegistrationApi } from "./api.js";
 
 export function renderSigninForm({ loginContainerElement, setToken, fetchCommentsAndRender }) {
 
@@ -31,6 +31,8 @@ export function renderSigninForm({ loginContainerElement, setToken, fetchComment
 
 
     document.getElementById('signin-button').addEventListener("click", () => {
+      
+      if (isLoginMode) {
       const login = document.getElementById('signin-login-input').value;
       const password = document.getElementById('signin-password-input').value;
 
@@ -48,8 +50,6 @@ export function renderSigninForm({ loginContainerElement, setToken, fetchComment
         password
       })
         .then((user) => {
-          console.log(user);
-
           setToken(`Bearer ${user.user.token}`);
           loginContainerElement.innerHTML = null;
           
@@ -58,6 +58,42 @@ export function renderSigninForm({ loginContainerElement, setToken, fetchComment
         }).catch((error) => {
           alert(error.message);;
         });
+      } else {
+        const login = document.getElementById('signin-login-input').value;
+        const password = document.getElementById('signin-password-input').value;
+        const name = document.getElementById('signin-name-input').value;
+        
+        if (!name) {
+          alert("Введите имя");
+          return;
+        }
+        if (!login) {
+          alert("Введите логин");
+          return;
+        }
+  
+        if (!password) {
+          alert("Введите пароль");
+          return;
+        }
+        
+        newUserRegistrationApi({
+          name,
+          login,
+          password
+        })
+        .then((user) =>{
+          setToken(`Bearer ${user.user.token}`);
+          loginContainerElement.innerHTML = null;
+          fetchCommentsAndRender();
+        })
+        .catch((error)=> {
+          alert(error.message);
+        });
+
+
+      }
+      
     });
   };
   renderForm();

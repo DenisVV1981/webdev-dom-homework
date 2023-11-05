@@ -7,8 +7,10 @@ import { renderNewCommentForm } from "./renderNewComment.js";
 
 const commentsLoading = document.getElementById('start');
 
+let myLocalStorage = window.localStorage;
 let token = null;
 let comments = [];
+
 
 const fetchCommentsAndRender = () => {
   getCommentsApi()
@@ -29,6 +31,7 @@ const renderApp = () => {
 
       setToken: function (newToken) {
         token = newToken;
+        myLocalStorage.setItem('token', newToken);
       }
     });
   }
@@ -41,7 +44,7 @@ const renderApp = () => {
     </div>`;
   commentsElement.innerHTML = appTemplate;
 
-  renderList({ comments });
+  renderList({ comments, token, fetchCommentsAndRender });
   if (token) {
     const listElements = document.getElementById('list');
     const deleteElement = document.getElementById('delete-comment');
