@@ -1,3 +1,7 @@
+Сайт проекта доступен по адресу 
+https://denisvv1981.github.io/webdev-dom-homework/
+
+
 # Проект "Комментарии"
 
 https://glebkaf.github.io/webdev-dom-homework/
