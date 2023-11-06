@@ -3,18 +3,22 @@
 export function getCommentsApi() {
     return fetch(" https://wedev-api.sky.pro/api/v2/denis-vasilev/comments", {
         method: 'GET',
+        headers: {
+            Authorization: window.localStorage.getItem('token'),
+        }
     })
         .then((response, wrongResponse) => {
             return response.json()
         })
         .then((responseData) => {
+            console.log(responseData);
             return responseData.comments.map((el) => {
                 return {
                     name: el.author.name,
                     date: new Date(el.date),
                     comment: el.text,
                     likeCount: el.likes,
-                    isLike: false,
+                    isLike: el.isLiked,
                     isEdit: false,
                     id: el.id,
                 };
@@ -26,6 +30,9 @@ export function getCommentsApi() {
 export function addCommentApi({ commentElement, nameElement, commentForm, commentFormAdding, fetchCommentsAndRender }) {
     fetch(" https://wedev-api.sky.pro/api/v2/denis-vasilev/comments", {
         method: 'POST',
+        headers: {
+            Authorization: window.localStorage.getItem('token'),
+        },
         body: JSON.stringify({
             text: commentElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
             name: nameElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
@@ -101,6 +108,17 @@ export function newUserRegistrationApi({ login, password, name }) {
 export function changeLikeApi({ comment }) {
     return fetch(`https://wedev-api.sky.pro/api/v2/denis-vasilev/comments/${comment.id}/toggle-like`, {
         method: 'POST',
+        headers: {
+            Authorization: window.localStorage.getItem('token'),
+        }
+    }).then((response) => {
+        return response.json();
+    });
+}
+
+export function deleteCommentApi(id) {
+    return fetch(`https://wedev-api.sky.pro/api/v2/denis-vasilev/comments/${id}`, {
+        method: 'DELETE',
         headers: {
             Authorization: window.localStorage.getItem('token'),
         }

@@ -4,20 +4,6 @@ export { initChangeLike, initEditElements, initSaveButtons, initAnswerCommentLis
 
 const listElements = document.getElementById('list');
 
-
-// Функция для имитации обащения к API, и задержки получения ответа. 
-// Т.е. ответ приходит не мгновенно, т.е. пока ждем ответ надо показать анимацию.
-// Не смотрите особо на внутренности, мы разберемся с этим позже
-function delay(interval = 300) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve();
-        }, interval);
-    });
-};
-
-// Пример использования:
-
 const initChangeLike = ({ comments, fetchCommentsAndRender }) => {
     const changeLikes = document.querySelectorAll(".like-button");
     for (const changeLike of changeLikes) {
@@ -30,18 +16,6 @@ const initChangeLike = ({ comments, fetchCommentsAndRender }) => {
             changeLikeApi({ comment });
 
             fetchCommentsAndRender();
-
-
-
-            // comment.isLikeLoading = true;
-            // delay(2000).then(() => {
-            //     comment.likeCount = comment.isLike
-            //         ? comment.likeCount - 1
-            //         : comment.likeCount + 1;
-            //     comment.isLike = !comment.isLike;
-            //     comment.isLikeLoading = false;
-            //     fetchCommentsAndRender();
-            // });
         });
     };
 };
