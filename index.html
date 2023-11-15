@@ -8,30 +8,18 @@
 </head>
 
 <body>
-
   <div class="container">
+    <div id="login-container"></div>
+    <br><br>
     <div id="start">
       Пожалуйста подождите, загружаю комментарии...
     </div>
-    <ul id="list" class="comments">
-    </ul>
-    <div>
-      <div>
-        <button id="delete-comment" class="add-form-button">Удалить последнее сообщение</button>
-      </div>
-    </div>
-    <div id="comment-form-adding" style="display: none;">
-      Комментарий добавляется...
-    </div>
-    <div id="comment-form" class="add-form">
-      <input type="text" id="name-input" class="add-form-name" placeholder="Введите ваше имя" value="" />
-      <textarea type="textarea" id="comment-input" class="add-form-text" placeholder="Введите ваш коментарий"
-        rows="4"></textarea>
-      <div class="add-form-row">
-        <button id="addMessage" class="add-form-button">Написать</button>
-      </div>
-    </div>
+    <div id="comments-container"></div>
+    <div id="comment-form-container"></div>
+    <div id="logout-container"></div>
   </div>
+
 </body>
 <script type="module" src="./main.js"></script>
+
 </html>

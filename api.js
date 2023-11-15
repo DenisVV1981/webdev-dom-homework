@@ -1,32 +1,38 @@
 
 
-export function getCommentsApi({ comments, render }) {
-    return fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
+export function getCommentsApi() {
+    return fetch(" https://wedev-api.sky.pro/api/v2/denis-vasilev/comments", {
         method: 'GET',
+        headers: {
+            Authorization: window.localStorage.getItem('token'),
+        }
     })
         .then((response, wrongResponse) => {
             return response.json()
         })
         .then((responseData) => {
-            comments = responseData.comments.map((el) => {
+            console.log(responseData);
+            return responseData.comments.map((el) => {
                 return {
                     name: el.author.name,
                     date: new Date(el.date),
                     comment: el.text,
                     likeCount: el.likes,
-                    isLike: false,
-                    isEdit: false
+                    isLike: el.isLiked,
+                    isEdit: false,
+                    id: el.id,
                 };
             });
-            render({ comments });
         });
-
 }
 
 
-export function addCommentApi({ commentElement, nameElement, commentForm, commentFormAdding, getComments }) {
-  fetch(" https://wedev-api.sky.pro/api/v1/denis-vasilev/comments", {
+export function addCommentApi({ commentElement, nameElement, commentForm, commentFormAdding, fetchCommentsAndRender }) {
+    fetch(" https://wedev-api.sky.pro/api/v2/denis-vasilev/comments", {
         method: 'POST',
+        headers: {
+            Authorization: window.localStorage.getItem('token'),
+        },
         body: JSON.stringify({
             text: commentElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
             name: nameElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
@@ -48,7 +54,7 @@ export function addCommentApi({ commentElement, nameElement, commentForm, commen
             }
         })
         .then((responseData) => {
-            return getComments();
+            return fetchCommentsAndRender();
         })
         .then(() => {
             nameElement.value = "";
@@ -65,4 +71,58 @@ export function addCommentApi({ commentElement, nameElement, commentForm, commen
             commentForm.style.display = 'flex';
             commentFormAdding.style.display = 'none';
         });
+}
+
+
+export function loginUserApi({ login, password }) {
+    return fetch("https://wedev-api.sky.pro/api/user/login", {
+        method: 'POST',
+        body: JSON.stringify({
+            login,
+            password
+        })
+    }).then((response) => {
+        if (response.status === 400) {
+            throw new Error("Неправильный логин или пароль");
+        }
+        return response.json();
+    });
+}
+
+export function newUserRegistrationApi({ login, password, name }) {
+    return fetch("https://wedev-api.sky.pro/api/user", {
+        method: 'POST',
+        body: JSON.stringify({
+            login,
+            password,
+            name,
+        })
+    }).then((response) => {
+        if (response.status === 400) {
+            throw new Error("Такой пользователь уже существует");
+        }
+        return response.json();
+    });
+}
+
+export function changeLikeApi({ comment }) {
+    return fetch(`https://wedev-api.sky.pro/api/v2/denis-vasilev/comments/${comment.id}/toggle-like`, {
+        method: 'POST',
+        headers: {
+            Authorization: window.localStorage.getItem('token'),
+        }
+    }).then((response) => {
+        return response.json();
+    });
+}
+
+export function deleteCommentApi(id) {
+    return fetch(`https://wedev-api.sky.pro/api/v2/denis-vasilev/comments/${id}`, {
+        method: 'DELETE',
+        headers: {
+            Authorization: window.localStorage.getItem('token'),
+        }
+    }).then((response) => {
+        return response.json();
+    });
 }
