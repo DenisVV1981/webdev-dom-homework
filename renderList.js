@@ -1,7 +1,7 @@
 
 export { renderList };
 import { initChangeLike, initEditElements, initSaveButtons, initAnswerCommentListener } from "./listenersInit.js";
-
+import { format } from 'date-fns';
 
 
 const renderList = ({ comments, token, fetchCommentsAndRender }) => {
@@ -9,13 +9,11 @@ const renderList = ({ comments, token, fetchCommentsAndRender }) => {
   const render = () => {
     const listElements = document.getElementById('list');
     listElements.innerHTML = comments.map((comment, index) => {
-      let d = comment.date;
-      let currentTime = `${d.getDate().toString().padStart(2, 0)}.${(d.getMonth() + 1).toString().padStart(2, 0)}.${d.getFullYear().toString().substr(-2)} ${d.getHours()}:${d.getMinutes()}`;
-
+      
       return `<li class="comment">
         <div class="comment-header">
           <div>${comment.name}</div>
-          <div>${currentTime}</div>
+          <div>${format(comment.date,'yyyy-MM-dd hh.mm.ss')}</div>
         </div>
         <div class="comment-body">
         ${token ?
