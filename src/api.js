@@ -1,14 +1,12 @@
-
-
 export function getCommentsApi() {
     return fetch(" https://wedev-api.sky.pro/api/v2/denis-vasilev/comments", {
-        method: 'GET',
+        method: "GET",
         headers: {
-            Authorization: window.localStorage.getItem('token'),
-        }
+            Authorization: window.localStorage.getItem("token"),
+        },
     })
-        .then((response, wrongResponse) => {
-            return response.json()
+        .then((response) => {
+            return response.json();
         })
         .then((responseData) => {
             console.log(responseData);
@@ -26,18 +24,27 @@ export function getCommentsApi() {
         });
 }
 
-
-export function addCommentApi({ commentElement, nameElement, commentForm, commentFormAdding, fetchCommentsAndRender }) {
+export function addCommentApi({
+    commentElement,
+    nameElement,
+    commentForm,
+    commentFormAdding,
+    fetchCommentsAndRender,
+}) {
     fetch(" https://wedev-api.sky.pro/api/v2/denis-vasilev/comments", {
-        method: 'POST',
+        method: "POST",
         headers: {
-            Authorization: window.localStorage.getItem('token'),
+            Authorization: window.localStorage.getItem("token"),
         },
         body: JSON.stringify({
-            text: commentElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
-            name: nameElement.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;"),
+            text: commentElement.value
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;"),
+            name: nameElement.value
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;"),
             //   forceError: true
-        })
+        }),
     })
         .then((response) => {
             console.log(response);
@@ -50,10 +57,10 @@ export function addCommentApi({ commentElement, nameElement, commentForm, commen
                 throw new Error("400 Ошибка");
             } else if (response.status === 500) {
                 postMessage();
-                throw new Error('500 Ошибка');
+                throw new Error("500 Ошибка");
             }
         })
-        .then((responseData) => {
+        .then(() => {
             return fetchCommentsAndRender();
         })
         .then(() => {
@@ -62,25 +69,27 @@ export function addCommentApi({ commentElement, nameElement, commentForm, commen
         })
         .catch((error) => {
             console.log(error);
-            if (error.message === '400 Ошибка') {
+            if (error.message === "400 Ошибка") {
                 alert("Поля ввода должны содержать не менее 3 символов");
-            } else if (error.message === '500 Ошибка') {
-            } else { alert("Кажется, у вас пропал интернет. Проверьте соединение."); }
+            } else if (error.message === "500 Ошибка") {
+                alert("Что-то пошло не так :(");
+            } else {
+                alert("Кажется, у вас пропал интернет. Проверьте соединение.");
+            }
         })
         .finally(() => {
-            commentForm.style.display = 'flex';
-            commentFormAdding.style.display = 'none';
+            commentForm.style.display = "flex";
+            commentFormAdding.style.display = "none";
         });
 }
 
-
 export function loginUserApi({ login, password }) {
     return fetch("https://wedev-api.sky.pro/api/user/login", {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
             login,
-            password
-        })
+            password,
+        }),
     }).then((response) => {
         if (response.status === 400) {
             throw new Error("Неправильный логин или пароль");
@@ -91,12 +100,12 @@ export function loginUserApi({ login, password }) {
 
 export function newUserRegistrationApi({ login, password, name }) {
     return fetch("https://wedev-api.sky.pro/api/user", {
-        method: 'POST',
+        method: "POST",
         body: JSON.stringify({
             login,
             password,
             name,
-        })
+        }),
     }).then((response) => {
         if (response.status === 400) {
             throw new Error("Такой пользователь уже существует");
@@ -106,23 +115,29 @@ export function newUserRegistrationApi({ login, password, name }) {
 }
 
 export function changeLikeApi({ comment }) {
-    return fetch(`https://wedev-api.sky.pro/api/v2/denis-vasilev/comments/${comment.id}/toggle-like`, {
-        method: 'POST',
-        headers: {
-            Authorization: window.localStorage.getItem('token'),
-        }
-    }).then((response) => {
+    return fetch(
+        `https://wedev-api.sky.pro/api/v2/denis-vasilev/comments/${comment.id}/toggle-like`,
+        {
+            method: "POST",
+            headers: {
+                Authorization: window.localStorage.getItem("token"),
+            },
+        },
+    ).then((response) => {
         return response.json();
     });
 }
 
 export function deleteCommentApi(id) {
-    return fetch(`https://wedev-api.sky.pro/api/v2/denis-vasilev/comments/${id}`, {
-        method: 'DELETE',
-        headers: {
-            Authorization: window.localStorage.getItem('token'),
-        }
-    }).then((response) => {
+    return fetch(
+        `https://wedev-api.sky.pro/api/v2/denis-vasilev/comments/${id}`,
+        {
+            method: "DELETE",
+            headers: {
+                Authorization: window.localStorage.getItem("token"),
+            },
+        },
+    ).then((response) => {
         return response.json();
     });
 }

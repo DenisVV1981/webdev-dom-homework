@@ -1,11 +1,17 @@
 {
   "scripts": {
-    "dev": "webpack --mode development --watch"
+    "dev": "webpack --mode development --watch",
+    "format": "prettier --write ./srcnpm/",
+    "lint:js": " eslint ./src/**/*.js"
   },
   "dependencies": {
     "date-fns": "^2.30.0"
   },
   "devDependencies": {
+    "eslint": "^8.54.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.1",
+    "prettier": "^3.1.0",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   }
