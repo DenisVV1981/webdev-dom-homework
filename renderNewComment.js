@@ -8,7 +8,7 @@ export function renderNewCommentForm({ newCommentContainerElement, fetchComments
          Комментарий добавляется...
      </div>
     <div id="comment-form" class="add-form">
-      <input type="text" id="name-input" class="add-form-name" placeholder="Введите ваше имя" value="${window.localStorage.getItem('userName')}" />
+      <input type="text" id="name-input" disabled class="add-form-name" placeholder="Введите ваше имя" value="${window.localStorage.getItem('userName')}" />
       <textarea type="textarea" id="comment-input" class="add-form-text" placeholder="Введите ваш коментарий"
       rows="4"></textarea>
       <div class="add-form-row">

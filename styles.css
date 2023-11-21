@@ -131,6 +131,10 @@ body {
   width: 300px;
   padding: 11px 22px;
 }
+.add-form-name:disabled{
+  /* background-color:grey; */
+  color: black;
+}
 
 .add-form-text {
   margin-top: 12px;

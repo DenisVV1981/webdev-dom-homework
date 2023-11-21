@@ -41,10 +41,13 @@ const renderList = ({ comments, token, fetchCommentsAndRender }) => {
       </li>`;
     }).join('');
 
+    if (token){
     initChangeLike({ comments, fetchCommentsAndRender });
     initEditElements({ comments, render });
     initSaveButtons({ comments, render, fetchCommentsAndRender });
-    initAnswerCommentListener({ comments });
+    initAnswerCommentListener({ comments });  
+    } 
+    
 
   };
   render();

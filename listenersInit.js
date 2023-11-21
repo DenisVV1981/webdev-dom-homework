@@ -13,9 +13,11 @@ const initChangeLike = ({ comments, fetchCommentsAndRender }) => {
             const index = changeLike.dataset.index;
             let comment = comments[index];
 
-            changeLikeApi({ comment });
+            changeLikeApi({ comment })
+                .then(()=>{
+                    fetchCommentsAndRender();
+                });
 
-            fetchCommentsAndRender();
         });
     };
 };
